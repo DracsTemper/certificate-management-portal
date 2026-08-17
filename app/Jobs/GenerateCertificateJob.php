@@ -13,7 +13,7 @@ class GenerateCertificateJob implements ShouldQueue
 {
     use Queueable;
 
-    public $studentId;
+    public int $studentId;
 
     public $tries = 3;
 
@@ -41,27 +41,23 @@ class GenerateCertificateJob implements ShouldQueue
         }
 
 
-        // Create certificate first
+        // Create certificate
         $certificate = new Certificate;
 
         $certificate->student_id = $student->id;
+
+        $certificate->certificate_number = 'CERT-' . date('Y') . '-' . str_pad(
+            Certificate::count() + 1,
+            5,
+            '0',
+            STR_PAD_LEFT
+        );
 
         $certificate->course = $student->course;
 
         $certificate->issued_at = now();
 
         $certificate->status = 'processing';
-
-        $certificate->save();
-
-
-        // Generate unique certificate number using certificate ID
-        $certificate->certificate_number = 'CERT-' . date('Y') . '-' . str_pad(
-            $certificate->id,
-            5,
-            '0',
-            STR_PAD_LEFT
-        );
 
         $certificate->save();
 
@@ -95,6 +91,7 @@ class GenerateCertificateJob implements ShouldQueue
 
         $certificate->save();
     }
+
 
     public function failed(\Throwable $exception): void
     {

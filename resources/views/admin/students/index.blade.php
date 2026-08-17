@@ -167,379 +167,381 @@
 
         <div class="table-responsive">
 
+            {{-- Bulk certificate form --}}
+            {{-- Kept OUTSIDE the table to prevent nested forms --}}
+
             <form
                 id="bulkCertificateForm"
                 method="POST"
                 action="{{ route('admin.students.certificates.generate.bulk') }}"
             >
-
                 @csrf
+            </form>
 
 
-                <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0">
 
-                    <thead class="table-light">
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th
+                            style="width: 45px;"
+                            class="ps-4"
+                        >
+
+                            <div class="form-check">
+
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="selectAll"
+                                >
+
+                            </div>
+
+                        </th>
+
+
+                        <th>
+                            Student
+                        </th>
+
+
+                        <th>
+                            Email
+                        </th>
+
+
+                        <th>
+                            Course
+                        </th>
+
+
+                        <th>
+                            Batch
+                        </th>
+
+
+                        <th>
+                            Certificate
+                        </th>
+
+
+                        <th class="text-end pe-4">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @forelse($students as $student)
 
                         <tr>
 
-                            <th
-                                style="width: 45px;"
-                                class="ps-4"
-                            >
+                            {{-- Checkbox --}}
+
+                            <td class="ps-4">
 
                                 <div class="form-check">
 
                                     <input
                                         type="checkbox"
-                                        class="form-check-input"
-                                        id="selectAll"
+                                        class="form-check-input student-checkbox"
+                                        name="student_ids[]"
+                                        value="{{ $student->id }}"
+                                        form="bulkCertificateForm"
                                     >
 
                                 </div>
 
-                            </th>
+                            </td>
 
 
-                            <th>
-                                Student
-                            </th>
+                            {{-- Student --}}
 
+                            <td>
 
-                            <th>
-                                Email
-                            </th>
+                                <div class="d-flex align-items-center gap-2">
 
+                                    <div
+                                        class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                        style="
+                                            width: 38px;
+                                            height: 38px;
+                                            background: #e8f0fe;
+                                            color: #2563eb;
+                                            font-size: 13px;
+                                            font-weight: 700;
+                                        "
+                                    >
 
-                            <th>
-                                Course
-                            </th>
-
-
-                            <th>
-                                Batch
-                            </th>
-
-
-                            <th>
-                                Certificate
-                            </th>
-
-
-                            <th class="text-end pe-4">
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @forelse($students as $student)
-
-                            <tr>
-
-                                {{-- Checkbox --}}
-
-                                <td class="ps-4">
-
-                                    <div class="form-check">
-
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input student-checkbox"
-                                            name="student_ids[]"
-                                            value="{{ $student->id }}"
-                                        >
+                                        {{ strtoupper(substr($student->name, 0, 1)) }}
 
                                     </div>
 
-                                </td>
 
+                                    <div>
 
-                                {{-- Student --}}
+                                        <div class="fw-semibold">
 
-                                <td>
+                                            {{ $student->name }}
 
-                                    <div class="d-flex align-items-center gap-2">
+                                        </div>
+
 
                                         <div
-                                            class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                                            style="
-                                                width: 38px;
-                                                height: 38px;
-                                                background: #e8f0fe;
-                                                color: #2563eb;
-                                                font-size: 13px;
-                                                font-weight: 700;
-                                            "
+                                            class="text-muted"
+                                            style="font-size: 11px;"
                                         >
 
-                                            {{ strtoupper(substr($student->name, 0, 1)) }}
-
-                                        </div>
-
-
-                                        <div>
-
-                                            <div class="fw-semibold">
-
-                                                {{ $student->name }}
-
-                                            </div>
-
-
-                                            <div
-                                                class="text-muted"
-                                                style="font-size: 11px;"
-                                            >
-
-                                                {{ $student->student_id }}
-
-                                            </div>
+                                            {{ $student->student_id }}
 
                                         </div>
 
                                     </div>
 
-                                </td>
+                                </div>
+
+                            </td>
 
 
-                                {{-- Email --}}
+                            {{-- Email --}}
 
-                                <td>
+                            <td>
 
-                                    <span class="text-muted small">
+                                <span class="text-muted small">
 
-                                        {{ $student->email }}
+                                    {{ $student->email }}
 
-                                    </span>
+                                </span>
 
-                                </td>
-
-
-                                {{-- Course --}}
-
-                                <td>
-
-                                    <span class="small">
-
-                                        {{ $student->course }}
-
-                                    </span>
-
-                                </td>
+                            </td>
 
 
-                                {{-- Batch --}}
+                            {{-- Course --}}
 
-                                <td>
+                            <td>
 
-                                    <span class="badge text-bg-light border">
+                                <span class="small">
 
-                                        {{ $student->batch }}
+                                    {{ $student->course }}
 
-                                    </span>
+                                </span>
 
-                                </td>
+                            </td>
 
 
-                                {{-- Certificate Status --}}
+                            {{-- Batch --}}
 
-                                <td>
+                            <td>
 
-                                    @if($student->certificate)
+                                <span class="badge text-bg-light border">
 
-                                        @if($student->certificate->status === 'generated')
+                                    {{ $student->batch }}
 
-                                            <span class="badge bg-success-subtle text-success">
+                                </span>
 
-                                                <i class="bi bi-check-circle-fill me-1"></i>
+                            </td>
 
-                                                Generated
 
-                                            </span>
+                            {{-- Certificate Status --}}
 
-                                        @elseif($student->certificate->status === 'processing')
+                            <td>
 
-                                            <span class="badge bg-warning-subtle text-warning-emphasis">
+                                @if($student->certificate)
 
-                                                <i class="bi bi-hourglass-split me-1"></i>
+                                    @if($student->certificate->status === 'generated')
 
-                                                Processing
+                                        <span class="badge bg-success-subtle text-success">
 
-                                            </span>
+                                            <i class="bi bi-check-circle-fill me-1"></i>
 
-                                        @elseif($student->certificate->status === 'failed')
+                                            Generated
 
-                                            <span class="badge bg-danger-subtle text-danger">
+                                        </span>
 
-                                                <i class="bi bi-x-circle-fill me-1"></i>
+                                    @elseif($student->certificate->status === 'processing')
 
-                                                Failed
+                                        <span class="badge bg-warning-subtle text-warning-emphasis">
 
-                                            </span>
+                                            <i class="bi bi-hourglass-split me-1"></i>
 
-                                        @else
+                                            Processing
 
-                                            <span class="badge bg-secondary-subtle text-secondary">
+                                        </span>
 
-                                                {{ ucfirst($student->certificate->status) }}
+                                    @elseif($student->certificate->status === 'failed')
 
-                                            </span>
+                                        <span class="badge bg-danger-subtle text-danger">
 
-                                        @endif
+                                            <i class="bi bi-x-circle-fill me-1"></i>
+
+                                            Failed
+
+                                        </span>
 
                                     @else
 
-                                        <span class="badge bg-light text-muted border">
+                                        <span class="badge bg-secondary-subtle text-secondary">
 
-                                            <i class="bi bi-dash-circle me-1"></i>
-
-                                            Not Generated
+                                            {{ ucfirst($student->certificate->status) }}
 
                                         </span>
 
                                     @endif
 
-                                </td>
+                                @else
+
+                                    <span class="badge bg-light text-muted border">
+
+                                        <i class="bi bi-dash-circle me-1"></i>
+
+                                        Not Generated
+
+                                    </span>
+
+                                @endif
+
+                            </td>
 
 
-                                {{-- Actions --}}
+                            {{-- Actions --}}
 
-                                <td class="text-end pe-4">
+                            <td class="text-end pe-4">
 
-                                    <div class="d-flex justify-content-end gap-1">
+                                <div class="d-flex justify-content-end gap-1">
 
 
-                                        {{-- View --}}
+                                    {{-- View --}}
+
+                                    <a
+                                        href="{{ route('admin.students.show', $student) }}"
+                                        class="btn btn-sm btn-light border"
+                                        title="View Student"
+                                    >
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+
+                                    {{-- Edit --}}
+
+                                    <a
+                                        href="{{ route('admin.students.edit', $student) }}"
+                                        class="btn btn-sm btn-light border"
+                                        title="Edit Student"
+                                    >
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+
+                                    {{-- Delete --}}
+
+                                    <form
+                                        action="{{ route('admin.students.destroy', $student) }}"
+                                        method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this student?')"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-light border text-danger"
+                                            title="Delete Student"
+                                        >
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="text-center py-5"
+                            >
+
+                                <div class="text-muted">
+
+                                    <i
+                                        class="bi bi-people fs-1 d-block mb-3"
+                                    ></i>
+
+
+                                    @if(request('search'))
+
+                                        <h6 class="fw-semibold">
+                                            No students found
+                                        </h6>
+
+                                        <p class="small mb-3">
+                                            No students matched "{{ request('search') }}".
+                                        </p>
+
 
                                         <a
-                                            href="{{ route('admin.students.show', $student) }}"
-                                            class="btn btn-sm btn-light border"
-                                            title="View Student"
+                                            href="{{ route('admin.students.index') }}"
+                                            class="btn btn-sm btn-outline-primary"
                                         >
-
-                                            <i class="bi bi-eye"></i>
-
+                                            Clear Search
                                         </a>
 
+                                    @else
 
-                                        {{-- Edit --}}
+                                        <h6 class="fw-semibold">
+                                            No students yet
+                                        </h6>
+
+                                        <p class="small mb-3">
+                                            Start by adding your first student.
+                                        </p>
+
 
                                         <a
-                                            href="{{ route('admin.students.edit', $student) }}"
-                                            class="btn btn-sm btn-light border"
-                                            title="Edit Student"
+                                            href="{{ route('admin.students.create') }}"
+                                            class="btn btn-sm btn-primary"
                                         >
-
-                                            <i class="bi bi-pencil"></i>
-
+                                            <i class="bi bi-person-plus me-1"></i>
+                                            Add Student
                                         </a>
 
+                                    @endif
 
-                                        {{-- Delete --}}
+                                </div>
 
-                                        <form
-                                            action="{{ route('admin.students.destroy', $student) }}"
-                                            method="POST"
-                                            class="d-inline"
-                                            onsubmit="return confirm('Are you sure you want to delete this student?')"
-                                        >
+                            </td>
 
-                                            @csrf
+                        </tr>
 
-                                            @method('DELETE')
+                    @endforelse
 
+                </tbody>
 
-                                            <button
-                                                type="submit"
-                                                class="btn btn-sm btn-light border text-danger"
-                                                title="Delete Student"
-                                            >
-
-                                                <i class="bi bi-trash"></i>
-
-                                            </button>
-
-                                        </form>
-
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-
-                                <td
-                                    colspan="7"
-                                    class="text-center py-5"
-                                >
-
-                                    <div class="text-muted">
-
-                                        <i
-                                            class="bi bi-people fs-1 d-block mb-3"
-                                        ></i>
-
-
-                                        @if(request('search'))
-
-                                            <h6 class="fw-semibold">
-                                                No students found
-                                            </h6>
-
-                                            <p class="small mb-3">
-                                                No students matched "{{ request('search') }}".
-                                            </p>
-
-
-                                            <a
-                                                href="{{ route('admin.students.index') }}"
-                                                class="btn btn-sm btn-outline-primary"
-                                            >
-                                                Clear Search
-                                            </a>
-
-                                        @else
-
-                                            <h6 class="fw-semibold">
-                                                No students yet
-                                            </h6>
-
-                                            <p class="small mb-3">
-                                                Start by adding your first student.
-                                            </p>
-
-
-                                            <a
-                                                href="{{ route('admin.students.create') }}"
-                                                class="btn btn-sm btn-primary"
-                                            >
-                                                <i class="bi bi-person-plus me-1"></i>
-                                                Add Student
-                                            </a>
-
-                                        @endif
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                        @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </form>
+            </table>
 
         </div>
 
@@ -557,11 +559,17 @@
                     <div class="text-muted small">
 
                         Showing
+
                         <strong>{{ $students->firstItem() }}</strong>
+
                         to
+
                         <strong>{{ $students->lastItem() }}</strong>
+
                         of
+
                         <strong>{{ $students->total() }}</strong>
+
                         students
 
                     </div>
@@ -578,6 +586,7 @@
             </div>
 
         @endif
+
 
     </div>
 
@@ -602,6 +611,7 @@
 
         function updateBulkActionBar()
         {
+
             const checked = document.querySelectorAll(
                 '.student-checkbox:checked'
             );
